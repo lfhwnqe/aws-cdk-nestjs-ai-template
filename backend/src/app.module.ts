@@ -11,6 +11,7 @@ import { DatabaseModule } from './database/database.module';
 import { SharedModule } from './shared/shared.module';
 import { ImportExportModule } from './modules/import-export/import-export.module';
 import { CognitoJwtAuthGuard } from './auth/guards/cognito-jwt.guard';
+import { AiModule } from './modules/ai/ai.module';
 import configuration from './config/configuration';
 
 @Module({
@@ -36,6 +37,7 @@ import configuration from './config/configuration';
     ImportExportModule,
     AuthModule,
     ProductModule,
+    AiModule,
   ],
   controllers: [AppController],
   providers: [
