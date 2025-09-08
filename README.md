@@ -187,7 +187,7 @@ npm run destroy:lambda:prod
 
 Notes:
 
-- Scripts pass `--context environment=dev|prod` to CDK and default stack name to `linuo-aws-template-<env>`.
+- Scripts pass `--context environment=dev|prod` to CDK and default stack name to `linuo-aws-ai-template-<env>`.
 - Override stack name via `--context stackName=<name>`.
 
 ### Post-Deploy Verification

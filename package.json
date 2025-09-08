@@ -1,5 +1,5 @@
 {
-  "name": "linuo-aws-template-backend-monorepo",
+  "name": "linuo-aws-ai-template-backend-monorepo",
   "version": "1.0.0",
   "description": "Linuo Aws Cdk monorepo (Yarn Workspaces)",
   "author": "Linuo",
@@ -24,12 +24,12 @@
     "cdk:diff:dev": "cd infrastructure && npm run cdk diff -- --context environment=dev",
     "cdk:diff:prod": "cd infrastructure && npm run cdk diff -- --context environment=prod",
     "build:lambda": "./scripts/build-lambda.sh",
-    "deploy:lambda:dev": "npm run backend:build:lambda && npm run cdk:deploy:dev -- --context stackName=linuo-aws-template-dev",
-    "deploy:lambda:prod": "npm run backend:build:lambda && npm run cdk:deploy:prod -- --context stackName=linuo-aws-template-prod",
+    "deploy:lambda:dev": "npm run backend:build:lambda && npm run cdk:deploy:dev -- --context stackName=linuo-aws-ai-template-dev",
+    "deploy:lambda:prod": "npm run backend:build:lambda && npm run cdk:deploy:prod -- --context stackName=linuo-aws-ai-template-prod",
     "destroy:lambda:dev": "npm run cdk:destroy:dev",
     "destroy:lambda:prod": "npm run cdk:destroy:prod",
-    "deploy:dev": "npm run backend:build:lambda && npm run cdk:deploy:dev -- --context stackName=linuo-aws-template-dev",
-    "deploy:prod": "npm run backend:build:lambda && npm run cdk:deploy:prod -- --context stackName=linuo-aws-template-prod",
+    "deploy:dev": "npm run backend:build:lambda && npm run cdk:deploy:dev -- --context stackName=linuo-aws-ai-template-dev",
+    "deploy:prod": "npm run backend:build:lambda && npm run cdk:deploy:prod -- --context stackName=linuo-aws-ai-template-prod",
     "prepare": "if [ -d .git ]; then husky install; fi"
   },
   "dependencies": {},

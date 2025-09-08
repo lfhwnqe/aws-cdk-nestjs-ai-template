@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import 'source-map-support/register';
 import * as cdk from 'aws-cdk-lib';
-import { LinuoAwsTemplateStack } from '../lib/linuo-aws-template-stack';
+import { LinuoAwsTemplateStack } from '../lib/linuo-aws-ai-template-stack';
 
 const app = new cdk.App();
 
@@ -13,7 +13,7 @@ const stackNameFromContext = app.node.tryGetContext('stackName');
 
 // Get project name; if stackName is provided, derive projectName from it when possible
 const projectNameEnv = process.env.PROJECT_NAME;
-let projectName = projectNameEnv || 'linuo-aws-template';
+let projectName = projectNameEnv || 'linuo-aws-ai-template';
 if (!projectNameEnv && typeof stackNameFromContext === 'string' && stackNameFromContext.length > 0) {
   // If stackName ends with -<environment>, strip it to get projectName
   const suffix = `-${environment}`;
