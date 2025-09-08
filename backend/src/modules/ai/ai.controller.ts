@@ -3,6 +3,7 @@ import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 
 import { Public } from '@/common/decorators/public.decorator';
 import { AiService } from './ai.service';
+import { Role, Roles } from '@/common/decorators/roles.decorator';
 
 @ApiTags('AI')
 @Controller('weather')
@@ -10,6 +11,7 @@ export class AiController {
   constructor(private readonly aiService: AiService) {}
 
   @Get()
+  @Roles(Role.SUPER_ADMIN, Role.ADMIN, Role.USER)
   @ApiOperation({ summary: '根据城市查询天气（调用 Mastra Weather Agent）' })
   @ApiQuery({
     name: 'city',
