@@ -1,0 +1,46 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+# Ensure Node is available in restricted Git hook PATH
+if ! command -v node >/dev/null 2>&1; then
+  # Load NVM if present
+  export NVM_DIR="$HOME/.nvm"
+  if [ -s "$NVM_DIR/nvm.sh" ]; then
+    . "$NVM_DIR/nvm.sh"
+  fi
+  # Add common Node install locations
+  [ -d "/usr/local/bin" ] && PATH="/usr/local/bin:$PATH"
+  [ -d "/opt/homebrew/bin" ] && PATH="/opt/homebrew/bin:$PATH"
+  # Use latest NVM Node bin if available
+  latest_nvm_node_bin=$(ls -1d "$HOME/.nvm/versions/node"/*/bin 2>/dev/null | tail -n1)
+  if [ -n "$latest_nvm_node_bin" ] && [ -d "$latest_nvm_node_bin" ]; then
+    PATH="$latest_nvm_node_bin:$PATH"
+  fi
+fi
+
+# Find prettier binary (prefer workspace install)
+if [ -x "./node_modules/.bin/prettier" ]; then
+  PRETTIER="./node_modules/.bin/prettier"
+elif command -v prettier >/dev/null 2>&1; then
+  PRETTIER="$(command -v prettier)"
+else
+  echo "[husky] prettier not found; skipping format"
+  exit 0
+fi
+
+echo "[husky] formatting staged files before commit..."
+# Iterate staged files (added/copied/modified), null-delimited for safety
+git diff --cached --name-only --diff-filter=ACMR -z | \
+  while IFS= read -r -d '' file; do
+    case "$file" in
+      *.ts|*.tsx|*.js|*.jsx|*.json|*.md|*.yml|*.yaml|*.css|*.scss|*.html)
+        "$PRETTIER" --log-level warn --write "$file" || exit 1
+        git add "$file" || exit 1
+        ;;
+      *)
+        ;;
+    esac
+  done || exit 1
+
+echo "[husky] format complete"
+exit 0
