@@ -2,7 +2,9 @@
 import { google } from '@ai-sdk/google';
 import { Agent } from '@mastra/core/agent';
 import { weatherTool } from '../tools/weather-tool';
+
 const model = google('gemini-2.5-flash');
+
 export const weatherAgent = new Agent({
   name: 'Weather Agent',
   instructions: `
