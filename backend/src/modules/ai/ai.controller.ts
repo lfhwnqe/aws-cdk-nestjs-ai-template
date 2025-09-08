@@ -10,6 +10,7 @@ import { Role, Roles } from '@/common/decorators/roles.decorator';
 export class AiController {
   constructor(private readonly aiService: AiService) {}
 
+  // todo 不适用 public 修饰器会401，但token是有效的
   @Get()
   @Roles(Role.SUPER_ADMIN, Role.ADMIN, Role.USER)
   @ApiOperation({ summary: '根据城市查询天气（调用 Mastra Weather Agent）' })
