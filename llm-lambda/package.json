@@ -5,9 +5,20 @@
   "description": "LLM Lambda function package",
   "main": "index.js",
   "scripts": {
-    "build": "echo 'No build configured yet'",
+    "dev": "mastra dev",
+    "build": "mastra build",
     "test": "node --version > /dev/null && echo 'No tests yet'"
   },
-  "dependencies": {},
-  "devDependencies": {}
+  "dependencies": {
+    "@ai-sdk/google": "^2.0.13",
+    "@ai-sdk/openai": "^1",
+    "@mastra/core": "^0.16.0",
+    "zod": "^3"
+  },
+  "devDependencies": {
+    "@types/node": "^24.3.1",
+    "mastra": "^0.12.0",
+    "tsx": "^4.20.5",
+    "typescript": "^5.9.2"
+  }
 }

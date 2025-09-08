@@ -7,7 +7,7 @@
   "license": "MIT",
   "workspaces": [
     "backend",
-    "llm-lambda"
+    "mastra"
   ],
   "scripts": {
     "clean": "./scripts/clean.sh",

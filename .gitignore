@@ -70,3 +70,4 @@ lambda-temp-build/
 # Temporary files
 *.tmp
 *.temp
+*/.mastra
