@@ -42,6 +42,10 @@ flowchart LR
     evb[EventBridge Keep-warm Health Check]
   end
 
+  subgraph EXT[External Services]
+    llm[LLM Provider: Google Gemini or OpenAI]
+  end
+
   subgraph CDK[CDK Stack]
     cdkstack[CDK Deployment and Env Var Injection]
   end
@@ -72,7 +76,7 @@ flowchart LR
   mod_shared --> cognito
   mod_shared --> s3
   mod_db --> ddb
-  mod_ai --> cognito
+  mod_ai --> llm
 
   cdkstack -.-> apigw
   cdkstack -.-> lambda_app
@@ -89,6 +93,7 @@ flowchart LR
 - Keep-warm via CDK: EventBridge periodically calls the health endpoint to reduce Lambda cold starts in deployed environments.
 - Basic auth flows: User registration, email verification, login, profile, and password change backed by Amazon Cognito + JWT for API protection.
 - DynamoDB integration: Pay-per-request tables with practical GSIs; table names and regions are wired via environment variables and CDK outputs.
+- AI egress & secrets: Lambda calls external LLM providers over the public internet. If placing Lambda in a VPC, ensure outbound access via a NAT Gateway. Inject LLM API keys via Lambda env vars (from root `.env`), and consider AWS Secrets Manager/SSM for production.
 
 ## Online Demo
 
