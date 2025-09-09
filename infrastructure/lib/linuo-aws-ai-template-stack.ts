@@ -14,6 +14,8 @@ export interface LinuoAwsTemplateStackProps extends cdk.StackProps {
   environment: string;
   stackName: string;
   projectName: string;
+  openaiApiKey?: string;
+  googleGenerativeAiApiKey?: string;
 }
 
 export class LinuoAwsTemplateStack extends cdk.Stack {
@@ -244,6 +246,11 @@ export class LinuoAwsTemplateStack extends cdk.Stack {
         SWAGGER_TITLE: 'Trade Management API',
         SWAGGER_DESCRIPTION: 'API for Trade Management System',
         SWAGGER_VERSION: '1.0.0',
+        // AI Provider Keys (optional; only set if provided)
+        ...(props.openaiApiKey ? { OPENAI_API_KEY: props.openaiApiKey } : {}),
+        ...(props.googleGenerativeAiApiKey
+          ? { GOOGLE_GENERATIVE_AI_API_KEY: props.googleGenerativeAiApiKey }
+          : {}),
       },
     });
 
