@@ -6,8 +6,7 @@
   "private": true,
   "license": "MIT",
   "workspaces": [
-    "backend",
-    "mastra"
+    "backend"
   ],
   "scripts": {
     "clean": "./scripts/clean.sh",
