@@ -7,7 +7,7 @@
 
 ## Purpose
 
-This template accelerates building serverless applications with NestJS and the AWS Cloud Development Kit (CDK). It bundles a ready-to-use architecture featuring API Gateway + Lambda, DynamoDB, S3, and Cognito so you can focus on business logic instead of boilerplate infrastructure.
+This template accelerates building serverless applications with NestJS and the AWS Cloud Development Kit (CDK). It bundles a ready-to-use architecture featuring API Gateway + Lambda, DynamoDB, S3, Cognito, and an optional AI module powered by Mastra + Vercel AI SDK so you can focus on business logic instead of boilerplate infrastructure.
 
 ## Why Serverless (CDK + Lambda)
 
@@ -22,6 +22,7 @@ This stack uses AWS CDK to provision a fully managed Serverless backend on AWS L
 - **NestJS** framework with TypeScript
 - **AWS CDK** infrastructure as code
 - **Serverless Stack**: API Gateway, Lambda, DynamoDB, S3, Cognito
+- **AI Module (optional)**: Mastra agents with Vercel AI SDK (Google Gemini / OpenAI)
 - **Environment-aware** configuration for dev and prod
 - **Testing & Linting** via Node's test runner (`node:test`), ESLint, and Prettier
 - **Scripts** for development, building, and deploying
@@ -51,6 +52,7 @@ flowchart LR
     mod_impexp[ImportExportModule]
     mod_shared[SharedModule]
     mod_db[DatabaseModule]
+    mod_ai[AiModule]
   end
 
   client -->|HTTPS| apigw
@@ -62,6 +64,7 @@ flowchart LR
   lambda_app --> mod_impexp
   lambda_app --> mod_shared
   lambda_app --> mod_db
+  lambda_app --> mod_ai
 
   mod_auth --> cognito
   mod_product --> ddb
@@ -69,6 +72,7 @@ flowchart LR
   mod_shared --> cognito
   mod_shared --> s3
   mod_db --> ddb
+  mod_ai --> cognito
 
   cdkstack -.-> apigw
   cdkstack -.-> lambda_app
@@ -98,12 +102,13 @@ flowchart LR
 ├── backend/            # NestJS application (NestJS 11 + TypeScript)
 │   └── src/
 │       ├── modules/    # Feature modules (user, customer, product, ...)
+│       │   └── ai/     # AI module (example: Weather Agent API)
 │       ├── auth/       # AuthN/AuthZ (Cognito + JWT)
 │       ├── common/     # Common utilities, interceptors, pipes, filters
 │       ├── shared/     # Cross-cutting helpers
 │       ├── config/     # App configuration (environment-aware)
-│       └── database/   # DynamoDB integration
-├── llm-lambda/         # Additional Lambda workspace (LLM example/integration)
+│       ├── database/   # DynamoDB integration
+│       └── mastra/     # Mastra agents & tools
 ├── infrastructure/     # AWS CDK stacks (deploy/diff/destroy)
 ├── scripts/            # Dev/build/deploy helper scripts
 ├── docs/               # Documentation
@@ -164,6 +169,7 @@ npm run start:dev
 - Lambda bundle: `npm run backend:build:lambda` or `npm run build:lambda`
 - Quality: `npm run lint`, `npm run format`
 - Tests: `npm test` (Node's `node:test` in each workspace)
+- AI dev tools (optional, in `backend/`): `npm run ai:dev`
 
 ### Deployment (CDK)
 
@@ -205,6 +211,38 @@ Notes:
 - Tip: most deps are bundled; `swagger-ui-dist` is external and copied as static assets. Swagger is disabled in prod by env.
 
 More details and troubleshooting tips are available in the [Chinese guide](docs/项目模板使用指南.zh-CN.md). If variables look different, compare with `docs/CDK_OUTPUT_EXAMPLE.md`, but always prefer the `EnvFileContent` from current deploy logs.
+
+## AI Capabilities (Mastra + Vercel AI SDK)
+
+This template ships with an example AI module using Mastra for agent orchestration and Vercel AI SDK providers.
+
+- Location: `backend/src/modules/ai` (Nest module/service/controller) and `backend/src/mastra` (agents/tools)
+- Example agent: `weatherAgent` using `@ai-sdk/google` model `gemini-2.5-flash`
+- API endpoint: `GET {apiBase}/weather?city=<name>`
+- Auth: protected by global Cognito JWT guard; requires role `user|admin|super_admin`
+
+Environment variables (providers):
+
+- `GOOGLE_GENERATIVE_AI_API_KEY` (for Google Gemini via `@ai-sdk/google`)
+- `OPENAI_API_KEY` (if switching to OpenAI models)
+
+Where to set keys:
+
+- Local dev: add to `backend/.env`
+- Deployed Lambda: set in repository root `.env` before `deploy:*`; CDK injects them into the Lambda environment (keys are not included in the `EnvFileContent` output)
+
+Quick test:
+
+```bash
+curl -X GET "http://localhost:3000/api/v1/weather?city=Beijing" \
+  -H "Authorization: Bearer <JWT_ACCESS_TOKEN>"
+```
+
+Model switch & extension:
+
+- Switch model: edit `backend/src/mastra/agents/weather-agent.ts` (e.g., swap `google('gemini-2.5-flash')` to OpenAI and provide `OPENAI_API_KEY`)
+- Add tools: create a tool in `backend/src/mastra/tools` using `createTool` and register it in the agent; use via `mastra.getAgent('<id>')`
+- New endpoints: add controller/service methods under `backend/src/modules/ai` and document with Swagger
 
 ### Frontend Template
 
